@@ -1,5 +1,5 @@
-using Core.Constants;
-using Core.Settings;
+using Domain.Constants;
+using Domain.Settings;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

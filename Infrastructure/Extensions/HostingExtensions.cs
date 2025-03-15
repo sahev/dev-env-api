@@ -1,4 +1,4 @@
-using Core.Settings;
+using Domain.Settings;
 using Infrastructure.Data;
 using Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Builder;

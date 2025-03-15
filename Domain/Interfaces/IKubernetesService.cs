@@ -1,15 +1,15 @@
-﻿using Core.Dtos.Kubernetes;
-using Core.Dtos.Project;
-using Core.Dtos.Services;
-using Core.Enums;
+﻿using Domain.Dtos.Kubernetes;
+using Domain.Dtos.Project;
+using Domain.Dtos.Services;
+using Domain.Enums;
 
 namespace Domain.Interfaces
 {
     public interface IKubernetesService
     {
-        Task<ServiceResponseDto> AddServiceToUserPodAsync(ServiceDto service, ProjectDto project);
-        Task DeleteServiceAsync(ServiceDto service);
-        Task<ContainerStatusType> GetServiceStatusAsync(ServiceDto service);
-        Task<ContainerMetrics> GetServiceMetricsAsync(ServiceDto service);
+        Task<ServiceResponseDto> AddServiceToUserPodAsync(KubernetesServiceDto service, ProjectDto project);
+        Task DeleteServiceAsync(KubernetesServiceDto service);
+        Task<ContainerStatusType> GetServiceStatusAsync(KubernetesServiceDto service);
+        Task<ContainerMetrics> GetServiceMetricsAsync(KubernetesServiceDto service);
     }
 }

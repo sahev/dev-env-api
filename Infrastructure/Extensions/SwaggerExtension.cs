@@ -1,4 +1,4 @@
-using Core.Settings;
+using Domain.Settings;
 using Infrastructure.Extensions;
 using Infrastructure.Filters;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -70,7 +70,7 @@ public static class SwaggerExtension
 
         app.UseSwaggerUI(setupAction =>
         {
-            setupAction.SwaggerEndpoint("v1/swagger.json", "CleanArchitecture.api v1");
+            setupAction.SwaggerEndpoint("v1/swagger.json", "DevEnv Api v1");
             setupAction.RoutePrefix = "swagger";
         });
     }

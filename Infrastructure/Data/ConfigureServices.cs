@@ -1,5 +1,5 @@
-using Core.Repositories;
-using Core.Settings;
+using Domain.Repositories;
+using Domain.Settings;
 using Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

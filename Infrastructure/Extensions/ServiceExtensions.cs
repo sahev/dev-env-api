@@ -1,6 +1,7 @@
-﻿using Core.Services;
-using Domain.Factory.Services;
-using Domain.Services;
+﻿using Domain.Interfaces;
+using Infrastructure.DomainServices;
+using Infrastructure.Factory;
+using Infrastructure.KubernetesServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Extensions
@@ -10,9 +11,10 @@ namespace Infrastructure.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             return services
-                .AddScoped<ServiceFactory>()
+                .AddScoped<KubernetesServiceFactory>()
                 .AddScoped<IProjectService, ProjectService>()
-                .AddScoped<IServiceService, ServiceService>();
+                .AddScoped<IServiceService, ServiceService>()
+                .AddScoped<IKubernetesService, RedisService>();
         }
     }
 }

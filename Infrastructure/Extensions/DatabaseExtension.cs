@@ -1,11 +1,8 @@
-﻿using Core.Entities;
-using Infrastructure.Data;
+﻿using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Infrastructure.Extensions;
 

@@ -1,22 +1,16 @@
-using AutoMapper;
-using Core.Dtos.Project;
-using Core.Entities;
-using Core.Exceptions;
-using Core.Models;
-using Core.Services;
-using Domain.Factory.Services;
+using Application.Handlers.ProjectsHandler.Command;
+using Application.Handlers.ProjectsHandler.Query;
+using Domain.Dtos.Project;
+using Domain.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Text.RegularExpressions;
 
 namespace Application.Controllers;
 
-public class ProjectController(IProjectService projectService, ServiceFactory serviceFactory, IServiceService serviceService, IMapper mapper) : BaseController
+public class ProjectController(IMediator mediator) : BaseController
 {
-    private readonly IProjectService _projectService = projectService;
-    private readonly ServiceFactory _serviceFactory = serviceFactory;
-    private readonly IServiceService _serviceService = serviceService;
-    private readonly IMapper _mapper = mapper; 
+    private readonly IMediator _mediator = mediator;
 
     /// <summary>
     /// get a Project by id
@@ -28,26 +22,9 @@ public class ProjectController(IProjectService projectService, ServiceFactory se
     [SwaggerResponse(404, "Project not found.")]
     public async Task<IActionResult> Get(string id)
     {
-        var project = await _projectService.Get(id);
+        var response = await _mediator.Send((GetProjectQuery)id);
 
-        foreach (var service in project.Services)
-        {
-            var handler = _serviceFactory.GetServiceHandler(service.ServiceType);
-
-            var serviceDto = _mapper.Map<ServiceDto>(service);
-
-            var status = await handler.GetServiceStatusAsync(serviceDto);
-            var metrics = await handler.GetServiceMetricsAsync(serviceDto);
-
-            project.ContainerMetrics.Usage.Cpu += metrics.Usage.Cpu;
-            project.ContainerMetrics.Usage.Memory += metrics.Usage.Memory;
-            project.ContainerMetrics.UpTime += metrics.UpTime;
-
-            service.ContainerStatusType = status;
-            service.ContainerMetrics = metrics;
-        }
-
-        return Ok(project);
+        return Ok(response);
     }
 
     /// <summary>
@@ -60,29 +37,9 @@ public class ProjectController(IProjectService projectService, ServiceFactory se
     [SwaggerResponse(200, "Projects retrieved successfully.", typeof(Pagination<ProjectDto>))]
     public async Task<IActionResult> Get(int pageIndex = 0, int pageSize = 10)
     {
-        var projects = await _projectService.Get(pageIndex, pageSize);
+        var response = await _mediator.Send(new GetAllProjectsQuery { PageIndex = pageIndex, PageSize = pageSize });
 
-        foreach (var project in projects.Items)
-        {
-            foreach (var service in project.Services)
-            {
-                var handler = _serviceFactory.GetServiceHandler(service.ServiceType);
-
-                var serviceDto = _mapper.Map<ServiceDto>(service);
-
-                var status = await handler.GetServiceStatusAsync(serviceDto);
-                var metrics = await handler.GetServiceMetricsAsync(serviceDto);
-
-                project.ContainerMetrics.Usage.Cpu += service.ContainerMetrics.Usage.Cpu;
-                project.ContainerMetrics.Usage.Memory += service.ContainerMetrics.Usage.Memory;
-                project.ContainerMetrics.UpTime += metrics.UpTime;
-
-                service.ContainerStatusType = status;
-                service.ContainerMetrics = metrics;
-            }
-        }
-
-        return Ok(projects);
+        return Ok(response);
     }
 
     /// <summary>
@@ -94,8 +51,8 @@ public class ProjectController(IProjectService projectService, ServiceFactory se
     [HttpPost]
     [SwaggerResponse(201, "Project added successfully.", typeof(ProjectDto))]
     [SwaggerResponse(400, "Invalid request.")]
-    public async Task<IActionResult> Add(AddProjectRequest request, CancellationToken token)
-        => Ok(await _projectService.Add(request, token));
+    public async Task<IActionResult> Add(AddProjectCommand request, CancellationToken token)
+        => Ok(await _mediator.Send(request, token));
 
     /// <summary>
     /// update a Project
@@ -107,8 +64,8 @@ public class ProjectController(IProjectService projectService, ServiceFactory se
     [SwaggerResponse(200, "Project updated successfully.", typeof(ProjectDto))]
     [SwaggerResponse(400, "Invalid request.")]
     [SwaggerResponse(404, "Project not found.")]
-    public async Task<IActionResult> Update(UpdateProjectRequest request, CancellationToken token)
-        => Ok(await _projectService.Update(request, token));
+    public async Task<IActionResult> Update(PutProjectCommand request, CancellationToken token)
+        => Ok(await _mediator.Send(request, token));
 
     /// <summary>
     /// delete a Project by id
@@ -121,20 +78,7 @@ public class ProjectController(IProjectService projectService, ServiceFactory se
     [SwaggerResponse(404, "Project not found.")]
     public async Task<IActionResult> Delete(string id, CancellationToken token)
     {
-        var project = await _projectService.Get(id) ?? throw new UserFriendlyException("project not found", "project not found");
-
-        foreach (Service service in project.Services)
-        {
-            await _serviceService.Delete(service.Id, token);
-
-            var handler = _serviceFactory.GetServiceHandler(service.ServiceType);
-
-            var serviceDto = _mapper.Map<ServiceDto>(service);
-
-            await handler.DeleteServiceAsync(serviceDto);
-        }
-
-        await _projectService.Delete(id, token);
+        await _mediator.Send((DeleteProjectCommand)id, token);
 
         return Ok();
     }

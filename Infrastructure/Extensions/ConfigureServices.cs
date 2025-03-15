@@ -1,5 +1,4 @@
-using Core.Settings;
-using Domain.Mapping;
+using Domain.Settings;
 using Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +16,6 @@ public static class ConfigureServices
         services.AddEndpointsApiExplorer();
         services.AddDistributedMemoryCache();
         services.AddMemoryCache();
-        services.AddAutoMapper(typeof(MapProfile));
 
         // Middleware
         services.AddSingleton<GlobalExceptionMiddleware>();

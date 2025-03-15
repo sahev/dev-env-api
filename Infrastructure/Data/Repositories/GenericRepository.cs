@@ -1,5 +1,5 @@
-using Core.Models;
-using Core.Repositories;
+using Domain.Models;
+using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

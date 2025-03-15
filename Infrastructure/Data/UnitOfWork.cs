@@ -1,5 +1,4 @@
-using Core.Exceptions;
-using Core.Repositories;
+using Domain.Repositories;
 using Infrastructure.Data.Repositories;
 
 namespace Infrastructure.Data;
