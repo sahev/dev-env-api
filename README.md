@@ -1,6 +1,6 @@
 # dev-env-api
 
-Backend API for provisioning and managing development environments with services like **RabbitMQ**, **PostgreSQL**, and **Kafka**.
+Backend API for provisioning and managing development environments with services like **RabbitMQ**, **PostgreSQL**, **Kafka**, and **Redis**.
 
 > ⚠️ **This project is a required dependency for [sahev/dev-env-web](https://github.com/sahev/dev-env-web)**  
 > Ensure this API is running for the frontend interface to function correctly.
@@ -11,9 +11,10 @@ Backend API for provisioning and managing development environments with services
 
 This project provides a RESTful API that facilitates the creation, management, and teardown of isolated development environments. It automates the provisioning of essential services using **Docker** and **Kubernetes**, enabling developers to:
 
-- 🐘 **PostgreSQL** — Deploy relational databases
-- 🐇 **RabbitMQ** — Set up message brokers for asynchronous communication
-- 🔄 **Apache Kafka** — Configure distributed streaming platforms
+- 🐘 **PostgreSQL**
+- 🐇 **RabbitMQ**
+- 🔄 **Apache Kafka**
+- 🧠 **Redis**
 
 The API is designed to work seamlessly with the `dev-env-web` frontend, offering a complete solution for managing development environments.
 
@@ -25,7 +26,6 @@ The API is designed to work seamlessly with the `dev-env-web` frontend, offering
 - [Docker](https://www.docker.com/)
 - [Kubernetes](https://kubernetes.io/)
 - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
-- [Swagger](https://swagger.io/) for API documentation
 
 ---
 
@@ -35,8 +35,8 @@ Before running the API, ensure you have the following installed:
 
 - [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 - [Docker](https://www.docker.com/) installed and running
-- [Kubernetes](https://kubernetes.io/) configured (e.g., Docker Desktop with Kubernetes enabled)
-- [PostgreSQL](https://www.postgresql.org/)
+- [Kubernetes](https://kubernetes.io/) configured (Docker Desktop with Kubernetes enabled)
+- [PostgreSQL](https://www.postgresql.org/) configured
 
 ---
 
