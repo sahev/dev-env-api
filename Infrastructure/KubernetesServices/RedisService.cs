@@ -39,12 +39,12 @@ namespace Infrastructure.KubernetesServices
                     Requests = new Dictionary<string, ResourceQuantity>
                     {
                         { "cpu", new ResourceQuantity("250m") },
-                        { "memory", new ResourceQuantity("500m") }
+                        { "memory", new ResourceQuantity("500Mi") }
                     },
                     Limits = new Dictionary<string, ResourceQuantity>
                     {
                         { "cpu", new ResourceQuantity("250m") },
-                        { "memory", new ResourceQuantity("500m") }
+                        { "memory", new ResourceQuantity("500Mi") }
                     }
                 }
             };

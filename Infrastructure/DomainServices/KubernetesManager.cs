@@ -1,10 +1,13 @@
 ﻿using Domain.Dtos.Kubernetes;
 using Domain.Dtos.Project;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.Utilities;
 using k8s;
+using k8s.KubeConfigModels;
 using k8s.Models;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
 
 namespace Infrastructure.DomainServices
 {
@@ -140,8 +143,11 @@ namespace Infrastructure.DomainServices
 
         public async Task<string> CreateServiceIngressAsync(KubernetesServiceDto service, V1Container container)
         {
+
+            // Gera um host único para o Ingress
             string ingressHost = $"{service.PodName.Replace(" ", "-")}.{StringHelper.GenerateRandomStringFromGuid()}.{_httpContextAccessor.HttpContext.Request.Host.Host}";
 
+            // Cria o objeto Ingress
             var ingress = new V1Ingress
             {
                 ApiVersion = "networking.k8s.io/v1",
@@ -149,36 +155,44 @@ namespace Infrastructure.DomainServices
                 Metadata = new V1ObjectMeta
                 {
                     Name = $"{service.PodName}-ingress",
-                    NamespaceProperty = service.Namespace
+                    NamespaceProperty = service.Namespace,
+                    Annotations = new Dictionary<string, string>
+            {
+                // Anotação para usar o Ingress Nginx
+                { "nginx.ingress.kubernetes.io/backend-protocol", "TCP" }
+            }
                 },
                 Spec = new V1IngressSpec
                 {
+                    // Define o IngressClass como "nginx" (padrão do Nginx Ingress Controller)
+                    IngressClassName = "nginx",
                     Rules = new List<V1IngressRule>()
                 }
             };
 
+            // Adiciona regras para cada porta do container
             foreach (var containerPort in container.Ports)
             {
                 ingress.Spec.Rules.Add(
                     new V1IngressRule
                     {
-                        Host = ingressHost,
+                        Host = ingressHost, // Subdomínio único para o usuário
                         Http = new V1HTTPIngressRuleValue
                         {
                             Paths = new List<V1HTTPIngressPath>
                             {
                                 new V1HTTPIngressPath
                                 {
-                                    Path = "/",
+                                    Path = "/", // Rota padrão
                                     PathType = "Prefix",
                                     Backend = new V1IngressBackend
                                     {
                                         Service = new V1IngressServiceBackend
                                         {
-                                            Name = service.ServiceName,
+                                            Name = service.ServiceName, // Nome do serviço
                                             Port = new V1ServiceBackendPort
                                             {
-                                                Number = containerPort.ContainerPort
+                                                Number = containerPort.ContainerPort // Porta do serviço
                                             }
                                         }
                                     }
@@ -189,9 +203,10 @@ namespace Infrastructure.DomainServices
                 );
             }
 
-            // Criar o Ingress no Kubernetes
+            // Cria o Ingress no Kubernetes
             await _k8sClient.CreateNamespacedIngressAsync(ingress, service.Namespace);
 
+            // Retorna o endereço do serviço (subdomínio + porta)
             return $"{ingressHost}:{container.Ports.FirstOrDefault().ContainerPort}";
         }
 
