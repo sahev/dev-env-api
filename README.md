@@ -2,7 +2,7 @@
 
 Backend API for provisioning and managing development environments with services like **RabbitMQ**, **PostgreSQL**, **Kafka**, and **Redis**.
 
-> ⚠️ **This project is a required dependency for [sahev/dev-env-web](https://github.com/sahev/dev-env-web)**  
+> ⚠️ **This project is a required dependency for [sahev/dev-env-web](https://github.com/sahev/dev-env-web)**
 > Ensure this API is running for the frontend interface to function correctly.
 
 ---
@@ -54,15 +54,12 @@ cd dev-env-api
 In order to connect to PostgreSQL, you need to specify the connection string in the `appsettings.development.json` file. Here's how to configure it:
 
 - Open `appsettings.development.json`
-- Under the `"AppSettings.ConnectionStrings"` section, add your PostgreSQL connection string. It should look something like this:
+- Under the `"ConnectionStrings"` section, add your PostgreSQL connection string. It should look something like this:
 
 ```json
 {
-  "AppSettings": {
-    "ConnectionStrings": {
-      "DefaultConnection": "Host=myhost;Port=myport;Database=mydb;Username=myuser;Password=mypassword"
-    },
-    "UseInMemoryDatabase": false
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=myhost;Port=myport;Database=mydb;Username=myuser;Password=mypassword"
   }
 }
 ```

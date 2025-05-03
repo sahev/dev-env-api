@@ -20,14 +20,11 @@ public static class SwaggerExtension
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = appSettings.ApplicationDetail.ApplicationName,
                 Version = "v1",
-                Description = appSettings.ApplicationDetail.Description,
                 Contact = new OpenApiContact
                 {
                     Email = "devenv@devenv.com",
                     Name = "Samuel Evangelista",
-                    Url = new Uri(appSettings.ApplicationDetail.ContactWebsite),
                 },
                 License = new OpenApiLicense()
                 {
